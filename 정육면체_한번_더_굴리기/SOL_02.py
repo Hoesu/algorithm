@@ -1,4 +1,90 @@
-""" 정육면체 한번 더 굴리기 / 20260828 / 체감 난이도: S1
+""" 정육면체 한번 더 굴리기 / 20260921 / 체감 난이도: S1
+소요 시간 24분 / 시도 1회 / 실행 시간 57ms (코드트리) / 메모리 17MB (코드트리)
+
+함수화 안하는 연습 해보기.
+하드코딩은 여전히 싫다만, 주사위 굴릴 때는 이거만한게 없는것 같다.
+이번엔 1번 인덱스부터 받아서 헷갈릴 여지를 아예 주지 않았다.
+"""
+from collections import deque
+
+if __name__ == '__main__':
+    N, M = map(int, input().split())
+    board = [list(map(int, input().split())) for _ in range(N)]
+    directions = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+
+    # 주사위 초기화 (X, 상, 남, 동, 서, 북, 하)
+    dice = [0, 1, 2, 3, 4, 5, 6]
+
+    # 주사위 초기 위치와 이동 방향 설정
+    r, c, d = 0, 0, 0
+
+    # 점수 초기화
+    score = 0
+
+    # M번 반복
+    for _ in range(M):
+
+        # TODO: 현재 이동 방향대로 이동했을 때, 격자 벗어난다면 이동 방향 반전
+        if not(0 <= r + directions[d][0] < N and 0 <= c + directions[d][1] < N):
+            d = (d + 2) % 4
+
+        # TODO: 현재 방향대로 주사위 이동 (X, 상, 남, 동, 서, 북, 하)
+        if d == 0:
+            temp = [0, dice[4], dice[2], dice[1], dice[6], dice[5], dice[3]]
+        elif d == 1:
+            temp = [0, dice[5], dice[1], dice[3], dice[4], dice[6], dice[2]]
+        elif d == 2:
+            temp = [0, dice[3], dice[2], dice[6], dice[1], dice[5], dice[4]]
+        else:
+            temp = [0, dice[2], dice[6], dice[3], dice[4], dice[1], dice[5]]
+        dice = temp
+
+        # TODO: 주사위 굴린 후 위치 업데이트
+        r += directions[d][0]
+        c += directions[d][1]
+
+        # TODO: 현재 주사위 놓인 칸에 있는 수와 상하좌우로 뻗어나가는 모든 동일 수의 합 구하기
+        que = deque()
+        que.append((r, c))
+
+        vst = [[0] * N for _ in range(N)]
+        vst[r][c] = 1
+
+        val = board[r][c]
+        score += val
+
+        while que:
+            cr, cc = que.popleft()
+            for cd in range(4):
+                nr = cr + directions[cd][0]
+                nc = cc + directions[cd][1]
+                if not(0 <= nr < N and 0 <= nc < N):
+                    continue
+                if vst[nr][nc] != 0:
+                    continue
+                if board[nr][nc] != val:
+                    continue
+                score += val
+                vst[nr][nc] = 1
+                que.append((nr, nc))
+
+        # TODO: 주사위 이동 방향 조정
+        #   주사위의 아랫면 > 보드 숫자
+        #       이동 방향 90도 시계방향 회전
+        #   주사위의 아랫면 == 보드 숫자
+        #       이동 방향 변동 없음
+        #   주사위의 아랫면 < 보드 숫자
+        #       이동 방향 90도 반시계방향 회전
+        if dice[-1] > board[r][c]:
+            d = (d + 1) % 4
+        elif dice[-1] < board[r][c]:
+            d = (d - 1) % 4
+
+    # 정답 출력
+    print(score)
+
+
+"""정육면체 한번 더 굴리기 / 20260828 / 체감 난이도: S1
 소요 시간 2시간 / 시도 2회 / 실행 시간 73ms (코드트리) / 메모리 16MB (코드트리)
 
 [구상]
