@@ -3,6 +3,7 @@
 
 ### macOS ###
 # General
+*.mp4
 .DS_Store
 .AppleDouble
 .LSOverride
