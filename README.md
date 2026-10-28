@@ -1,2 +1,2 @@
 # algorithm
-I don't want to be scared of Coding Tests!!
+왔노라, 보았노라, 이겼노라.
